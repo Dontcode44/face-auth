@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:13
+    container_name: face_auth_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: facebook
+      POSTGRES_USER: postgres_face
+      POSTGRES_DB: postgres_face
+    ports:
+      - 5440:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgres
