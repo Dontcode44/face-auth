@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 import { AuthService } from './auth.service';
+import { Userd, Userd as Usertoken } from './decorators/token.decorator';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { MiddleGuard } from './guards/middle.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -25,10 +36,19 @@ export class AuthController {
   async activateAccount(@Query() activateUser: ActivateUserDto): Promise<void> {
     return this.authService.activateUser(activateUser);
   }
-  
-  @UseGuards(JwtAuthGuard)
+
+  //@UseGuards(JwtAuthGuard)
   @Get('get')
-  async test(): Promise<string> {
-    return 'test';
+  async test(@Usertoken() token: string): Promise<string> {
+    console.log(token);
+    return 'c:';
+  }
+
+  @UseGuards(MiddleGuard)
+  @UseGuards(JwtAuthGuard)
+  @Post('test')
+  async test2(@Userd() user: User): Promise<string> {
+    console.log(user);
+    return 'c:';
   }
 }
