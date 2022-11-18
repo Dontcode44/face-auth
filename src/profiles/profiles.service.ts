@@ -77,4 +77,30 @@ export class ProfilesService {
     }
     return await this.profileRepository.save(toUpdate);
   }
+
+  /**
+   * It deletes the profile of a user
+   * @param {string} userId - The id of the user whose profile we want to delete.
+   * @returns The user with the profile deleted.
+   */
+  async deleteProfile(userId: string): Promise<User> {
+    const userFound = await this.userRepository.findOne({
+      select: ['profile'],
+      where: {
+        id: userId,
+      },
+      relations: ['profile'],
+    });
+    if (!userFound) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (!userFound.profile) {
+      throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
+    }
+    await this.profileRepository.delete(userFound.profile.id);
+    userFound.profile = null;
+    await this.userRepository.save(userFound);
+
+    return userFound;
+  }
 }
