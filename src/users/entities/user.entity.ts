@@ -1,7 +1,10 @@
+import { Profiles } from 'src/profiles/entities/profiles.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,6 +25,10 @@ export class User {
 
   @Column({ type: 'uuid', unique: true, name: 'activation_token' })
   activationToken: string;
+
+  @OneToOne(() => Profiles, (profile) => profile.user)
+  @JoinColumn({ name: 'profile_id' })
+  profile: Profiles;
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
