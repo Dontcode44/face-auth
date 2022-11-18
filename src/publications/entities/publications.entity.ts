@@ -13,7 +13,7 @@ export class Publications {
   @Column()
   description: string;
 
-  @Column({ default: '0' })
+  @Column({ default: 0 })
   likes: number;
 
   @ManyToOne(() => Profiles, (profile) => profile.publications)
