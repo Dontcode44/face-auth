@@ -127,10 +127,15 @@ export class ProfilesService {
     return userFound.profile;
   }
 
+  /**
+   * This function takes in a profile id and returns a profile
+   * @param {number} id - number - This is the id of the profile we want to find.
+   * @returns The profile found by the id
+   */
   async getProfileByProfileId(id: number): Promise<Profiles> {
     const profileFound = await this.profileRepository.findOne({
       where: {
-        id
+        id,
       },
     });
     if (!profileFound) {
