@@ -14,6 +14,13 @@ export class ProfilesService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  /**
+   * We're creating a new profile and saving it to the database. Then we're assigning the newly created
+   * profile to the user and saving the user
+   * @param {string} userId - The id of the user we want to create a profile for.
+   * @param {CreateProfileDto} createProfile - CreateProfileDto
+   * @returns The user with the profile
+   */
   async createProfile(
     userId: string,
     createProfile: CreateProfileDto,
