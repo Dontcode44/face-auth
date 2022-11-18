@@ -103,4 +103,27 @@ export class ProfilesService {
 
     return userFound;
   }
+
+  /**
+   * It finds a user by its id, and then returns the user's profile
+   * @param {string} userId - string - The userId is the id of the user whose profile we want to
+   * retrieve.
+   * @returns The profile of the user
+   */
+  async getProfile(userId: string): Promise<Profiles> {
+    const userFound = await this.userRepository.findOne({
+      select: ['profile'],
+      where: {
+        id: userId,
+      },
+      relations: ['profile'],
+    });
+    if (!userFound) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (!userFound.profile) {
+      throw new HttpException('Profile not found', HttpStatus.NOT_FOUND);
+    }
+    return userFound.profile;
+  }
 }

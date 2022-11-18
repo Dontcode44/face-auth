@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { Userd } from 'src/auth/decorators/token.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { MiddleGuard } from 'src/auth/guards/middle.guard';
@@ -35,5 +35,11 @@ export class ProfilesController {
   @Patch('delete')
   async deleteProfile(@Userd() user: User): Promise<User> {
     return await this.profilesService.deleteProfile(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getProfile(@Userd() user: User): Promise<Profiles> {
+    return await this.profilesService.getProfile(user.id);
   }
 }
