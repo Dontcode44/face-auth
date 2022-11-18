@@ -30,4 +30,10 @@ export class ProfilesController {
   ): Promise<Profiles> {
     return await this.profilesService.updateProfile(user.id, updateProfile);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('delete')
+  async deleteProfile(@Userd() user: User): Promise<User> {
+    return await this.profilesService.deleteProfile(user.id);
+  }
 }
