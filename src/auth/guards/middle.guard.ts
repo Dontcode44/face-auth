@@ -3,6 +3,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
+/* A middleware that checks if the user is the owner of the resource. */
 export abstract class MiddleGuard implements CanActivate {
   constructor(private readonly userService: UsersService) {}
 

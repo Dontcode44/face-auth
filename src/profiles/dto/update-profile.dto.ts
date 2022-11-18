@@ -1,6 +1,6 @@
 import { IsAlpha, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateProfileDto {
+export class UpdateProfileDto {
   @IsNotEmpty()
   @IsString()
   @IsAlpha()
