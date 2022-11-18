@@ -5,7 +5,6 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RegisterUserDto } from 'src/auth/dto/register-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
