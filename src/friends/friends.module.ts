@@ -9,6 +9,7 @@ import { Friends } from './entities/friends.entity';
     TypeOrmModule.forFeature([Friends]),
   ],
   controllers: [FriendsController],
-  providers: [FriendsService]
+  providers: [FriendsService],
+  exports: [FriendsService],
 })
 export class FriendsModule {}

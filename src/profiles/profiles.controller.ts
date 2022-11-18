@@ -12,7 +12,7 @@ import { ProfilesService } from './profiles.service';
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
-  //@UseGuards(MiddleGuard)
+  @UseGuards(MiddleGuard)
   @UseGuards(JwtAuthGuard)
   @Post()
   async createProfile(
@@ -22,6 +22,7 @@ export class ProfilesController {
     return await this.profilesService.createProfile(user.id, createProfile);
   }
 
+  @UseGuards(MiddleGuard)
   @UseGuards(JwtAuthGuard)
   @Patch('update')
   async updateProfile(
@@ -31,12 +32,14 @@ export class ProfilesController {
     return await this.profilesService.updateProfile(user.id, updateProfile);
   }
 
+  @UseGuards(MiddleGuard)
   @UseGuards(JwtAuthGuard)
   @Patch('delete')
   async deleteProfile(@Userd() user: User): Promise<User> {
     return await this.profilesService.deleteProfile(user.id);
   }
 
+  @UseGuards(MiddleGuard)
   @UseGuards(JwtAuthGuard)
   @Get()
   async getProfile(@Userd() user: User): Promise<Profiles> {

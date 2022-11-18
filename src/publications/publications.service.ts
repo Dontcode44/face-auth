@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfilesService } from 'src/profiles/profiles.service';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Like, MoreThan, Repository } from 'typeorm';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { Publications } from './entities/publications.entity';
 
@@ -15,6 +15,10 @@ export class PublicationsService {
     private readonly profilesService: ProfilesService,
   ) {}
 
+  /**
+   * It returns a promise of an array of Publications
+   * @returns An array of Publications
+   */
   async findAll(): Promise<Publications[]> {
     return this.publicationsRepository.find();
   }
@@ -39,5 +43,54 @@ export class PublicationsService {
     });
     publication.author = profilePublication;
     return this.publicationsRepository.save(publication);
+  }
+
+  /**
+   * It searches for a publication by title and returns the publication if found
+   * @param {string} title - string
+   * @returns An array of publications that match the title.
+   */
+  async searchTitle(title: string) {
+    const postFound = await this.publicationsRepository.findBy({
+      title: Like('%' + title + '%'),
+    });
+    if (!postFound) {
+      throw new Error('Publication not found');
+    }
+    return postFound;
+  }
+
+  /**
+   * It searches for publications with more than 10 likes
+   * @param {number} likes - number
+   * @returns An array of publications with more than 10 likes.
+   */
+  searchMoreLikes(likes: number) {
+    const likesFound = this.publicationsRepository.find({
+      where: {
+        likes: MoreThan(10),
+      },
+    });
+    if (!likesFound) {
+      throw new Error('Publication not found');
+    }
+    return likesFound;
+  }
+
+  /**
+   * It searches for publications with less than or equal to 10 likes
+   * @param {number} likes - number
+   * @returns An array of publications
+   */
+  searchLikes(likes: number) {
+    const likesFound = this.publicationsRepository.find({
+      where: {
+        likes: LessThanOrEqual(10),
+      },
+    });
+    if (!likesFound) {
+      throw new Error('Publication not found');
+    }
+    return likesFound;
   }
 }
