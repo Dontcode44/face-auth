@@ -25,6 +25,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * It creates a new user, hashes the password, and saves the user to the database
+   * @param {RegisterUserDto} regUser - RegisterUserDto - the data that we're passing in from the
+   * controller
+   */
   async registerUser(regUser: RegisterUserDto): Promise<void> {
     const { email, password } = regUser;
     const salt = await bcrypt.genSalt();
@@ -50,6 +55,12 @@ export class AuthService {
     }
   }
 
+  /**
+   * It takes a loginDto object, finds the user by email, compares the password, and if the user exists
+   * and the password is valid, it returns an access token
+   * @param {LoginUserDto} loginDto - LoginUserDto - This is the DTO that we created earlier.
+   * @returns { accessToken: string }
+   */
   async loginUser(loginDto: LoginUserDto): Promise<{ accessToken: string }> {
     const { email, password } = loginDto;
     const user = await this.usersRepo.findByEmail(email);
@@ -65,6 +76,12 @@ export class AuthService {
     throw new HttpException('Bad credentials', HttpStatus.NOT_ACCEPTABLE);
   }
 
+  /**
+   * It takes an object with an id and a code, finds a user with that id and code, and if it finds one,
+   * it sets the user's active property to true
+   * @param {ActivateUserDto} activateUserD - ActivateUserDto - this is the DTO that we created
+   * earlier.
+   */
   async activateUser(activateUserD: ActivateUserDto): Promise<void> {
     const { id, code } = activateUserD;
     const user: User = await this.usersRepository.findOne({

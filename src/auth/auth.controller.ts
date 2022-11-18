@@ -37,8 +37,8 @@ export class AuthController {
     return this.authService.activateUser(activateUser);
   }
 
-  //@UseGuards(JwtAuthGuard)
-  @Get('get')
+  @UseGuards(JwtAuthGuard)
+  @Get('tests')
   async test(@Usertoken() token: string): Promise<string> {
     console.log(token);
     return 'c:';
@@ -48,7 +48,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('test')
   async test2(@Userd() user: User): Promise<string> {
-    console.log(user);
+    console.log(user.id);
     return 'c:';
   }
 }
