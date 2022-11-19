@@ -10,5 +10,9 @@ export class MessengerService {
     private messengerRepository: Repository<Messenger>,
   ) {}
 
-  async;
+  async getAllMessenger(
+    userId: string,
+  ): Promise<Messenger[]> {
+    return this.messengerRepository.find();
+  }
 }
