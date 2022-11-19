@@ -75,7 +75,34 @@ export class UsersService {
     return profileFound;
   }
 
+  /**
+   * It finds a user by userId, and returns the user's messenger
+   * @param {string} userId - string - the userId of the user whose messenger we want to get
+   * @returns The messenger of the user with the given userId.
+   */
   async getMessengerByUserId(userId: string) {
+    const messengerFound = await this.usersRepo.findOne({
+      select: ['profile'],
+      where: {
+        profile: {
+          messenger: {
+            chats: 'chat',
+          },
+        },
+      },
+    });
+    if (!messengerFound) {
+      throw new HttpException('Not exist', HttpStatus.NOT_FOUND);
+    }
+    return messengerFound;
+  }
+
+  /**
+   * It finds a user by a given userId, and then finds a chat by a given word
+   * @param {string} userId - string - the user id of the user whose messenger you want to get
+   * @param {string} word - string - the word that we want to search for
+   */
+  async getMessengerByFilter(userId: string, word: string) {
     const messengerFound = await this.usersRepo.findOne({
       select: ['profile'],
       where: {

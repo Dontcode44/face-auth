@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Messenger } from './entities/messenger.entity';
 
 @Injectable()
@@ -13,9 +14,9 @@ export class MessengerService {
   ) {}
 
   /**
-   * It returns a promise of an array of Messenger objects
-   * @param {string} userId - string
-   * @returns An array of all the messengers in the database.
+   * This function gets all the messages from the user's profile
+   * @param {string} userId - string - The userId of the user you want to get the messages of.
+   * @returns The user's messenger object.
    */
   async getAllMessenger(userId: string): Promise<Messenger> {
     const user = await this.userService.getMessengerByUserId(userId);
@@ -33,24 +34,21 @@ export class MessengerService {
    * @param {string} chat - string - The chat name that we want to find.
    * @returns The chat found
    */
-  async filterByName(chat: string): Promise<Messenger> {
-    const chatFound = await this.messengerRepository.findOne({
-      where: {
-        chats: chat,
-      },
-    });
-    if (!chat) {
-      throw new Error('Chat not found');
-    }
+  async filterByName(userId: string, word: string): Promise<User> {
+    const chatFound = await this.userService.getMessengerByFilter(userId, word);
     return chatFound;
   }
 
   /**
-   * It deletes a chat
-   * @param {string} chat - string - The chat ID of the chat you want to delete.
-   * @returns The chat is being deleted from the database.
+   * It deletes a chat by userId
+   * @param {string} userId - string - The userId of the user you want to delete the chat of.
+   * @returns The chat is being deleted.
    */
-  deleteChat(chat: string) {
-    return this.messengerRepository.delete(chat);
+  async deleteChat(userId: string): Promise<Messenger> {
+    const chatFound = await this.userService.getMessengerByUserId(userId);
+    if (!chatFound) {
+      throw new Error('Chat not found');
+    }
+    return this.messengerRepository.remove(chatFound.profile.messenger);
   }
 }
