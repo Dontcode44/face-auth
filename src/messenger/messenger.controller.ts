@@ -14,7 +14,7 @@ export class MessengerController {
   @Get()
   getAllMessenger(
     @Userd() userId: string,
-  ): Promise<Messenger[]> {
+  ): Promise<Messenger> {
     return this.messengerService.getAllMessenger(userId);
   }
 }

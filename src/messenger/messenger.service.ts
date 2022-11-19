@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { Messenger } from './entities/messenger.entity';
 
@@ -7,7 +8,8 @@ import { Messenger } from './entities/messenger.entity';
 export class MessengerService {
   constructor(
     @InjectRepository(Messenger)
-    private messengerRepository: Repository<Messenger>,
+    private readonly messengerRepository: Repository<Messenger>,
+    private readonly userService: UsersService,
   ) {}
 
   /**
@@ -15,8 +17,14 @@ export class MessengerService {
    * @param {string} userId - string
    * @returns An array of all the messengers in the database.
    */
-  async getAllMessenger(userId: string): Promise<Messenger[]> {
-    return this.messengerRepository.find();
+  async getAllMessenger(userId: string): Promise<Messenger> {
+    const user = await this.userService.getMessengerByUserId(userId);
+
+    const accountMessages = user.profile.messenger;
+    if (!accountMessages) {
+      throw new Error('No messages');
+    }
+    return accountMessages;
   }
 
   /**

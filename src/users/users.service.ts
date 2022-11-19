@@ -74,4 +74,21 @@ export class UsersService {
     }
     return profileFound;
   }
+
+  async getMessengerByUserId(userId: string) {
+    const messengerFound = await this.usersRepo.findOne({
+      select: ['profile'],
+      where: {
+        profile: {
+          messenger: {
+            chats: 'chat',
+          },
+        },
+      },
+    });
+    if (!messengerFound) {
+      throw new HttpException('Not exist', HttpStatus.NOT_FOUND);
+    }
+    return messengerFound;
+  }
 }
