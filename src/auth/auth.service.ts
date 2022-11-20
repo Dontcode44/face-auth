@@ -66,6 +66,9 @@ export class AuthService {
     const user = await this.usersRepo.findByEmail(email);
     const isValidPassword = await bcrypt.compare(password, user.password);
 
+    if (user.active === false) {
+      throw new UnprocessableEntityException('Please, activate your account');
+    }
     if (user && (await isValidPassword)) {
       const payload: JwtPayload = { id: user.id, email, active: user.active };
 
