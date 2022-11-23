@@ -61,7 +61,7 @@ export class UsersService {
    * It returns a user's profile by their userId
    * @param {string} userId - string - the userId of the user we want to find
    */
-  async getProfileByUserId(userId: string) {
+  async getProfileByUserId(userId: string): Promise<User> {
     const profileFound = await this.usersRepo.findOne({
       select: ['profile'],
       where: {
@@ -80,7 +80,7 @@ export class UsersService {
    * @param {string} userId - string - the userId of the user whose messenger we want to get
    * @returns The messenger of the user with the given userId.
    */
-  async getMessengerByUserId(userId: string) {
+  async getMessengerByUserId(userId: string): Promise<User> {
     const messengerFound = await this.usersRepo.findOne({
       select: ['profile'],
       where: {
@@ -102,7 +102,7 @@ export class UsersService {
    * @param {string} userId - string - the user id of the user whose messenger you want to get
    * @param {string} word - string - the word that we want to search for
    */
-  async getMessengerByFilter(userId: string, word: string) {
+  async getMessengerByFilter(userId: string, word: string): Promise<User> {
     const messengerFound = await this.usersRepo.findOne({
       select: ['profile'],
       where: {

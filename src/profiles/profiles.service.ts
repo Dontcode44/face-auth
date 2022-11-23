@@ -143,4 +143,12 @@ export class ProfilesService {
     }
     return profileFound;
   }
+
+  //   async calculateAge(birthday: Date) {
+  //     const findProfileAge = await this.profileRepository.findOne({
+  //       select: ['birthdate'],
+  //       where: {
+  //         birthdate: birthday
+  //     });
+  //   }
 }
