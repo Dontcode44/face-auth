@@ -12,13 +12,13 @@ import { FriendsModule } from './friends/friends.module';
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'postgres',
-        host: 'face_auth_docker',
+        host: 'localhost',
         port: 5432,
         username: 'postgres_face',
         password: 'facebook',
         database: 'postgres_face',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false,
+        synchronize: true,
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         migrationsTableName: 'migrations_typeorm',
         migrationsRun: true,

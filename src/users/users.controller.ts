@@ -15,4 +15,11 @@ export class UsersController {
   async getAll(@Userd() user: User) {
     return this.usersService.finAll(user.id);
   }
+
+  @UseGuards(MiddleGuard)
+  @UseGuards(JwtAuthGuard)
+  @Get('age')
+  async getAge(@Userd() user: User) {
+    return this.usersService.getAgeUser(user.id);
+  }
 }

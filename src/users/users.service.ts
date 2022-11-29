@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Profiles } from 'src/profiles/entities/profiles.entity';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
@@ -117,5 +118,25 @@ export class UsersService {
       throw new HttpException('Not exist', HttpStatus.NOT_FOUND);
     }
     return messengerFound;
+  }
+
+  async getAgeUser(userId: string): Promise<User> {
+    const foundUser = await this.findById(userId);
+
+    const queryAge = await this.usersRepo
+      .createQueryBuilder('user')
+      .select('p."name", age(current_date, p.birthdate) as age')
+      .from(User, 'u')
+      .innerJoin('profiles', 'p', 'p.id = u.profile')
+      .where('u.id = :id', { id: userId })
+      .getRawOne();
+
+    console.log(queryAge);
+
+    if (!queryAge) {
+      throw new InternalServerErrorException('Error');
+    }
+
+    return queryAge;
   }
 }
