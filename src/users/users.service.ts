@@ -120,6 +120,15 @@ export class UsersService {
     return messengerFound;
   }
 
+ /**
+  * It returns the age of a user by querying the database for the user's profile and then using the
+  * Postgres age function to calculate the age
+  * @param {string} userId - The id of the user we want to get the age of.
+  * @returns {
+  *     name: 'John Doe',
+  *     age: '00 years 11 mons 29 days'
+  *   }
+  */
   async getAgeUser(userId: string): Promise<User> {
     const foundUser = await this.findById(userId);
 
