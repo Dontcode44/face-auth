@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -15,6 +16,7 @@ export class User {
   id: string;
 
   @Column({ unique: true, length: 40 })
+  @Index('idx_email')
   email: string;
 
   @Column()
@@ -30,9 +32,9 @@ export class User {
   @JoinColumn({ name: 'profile_id' })
   profile: Profiles;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'createdAt' })
   created_at: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updatedAt' })
   updated_at: Date;
 }
