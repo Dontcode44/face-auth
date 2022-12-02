@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { v4 } from 'uuid';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { JwtPayload } from './jwt/jwt-payload.interface';
+import { EncoderService } from './bcrypt/encoder.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly usersRepo: UsersService,
     private readonly jwtService: JwtService,
+    private readonly encoderService: EncoderService,
   ) {}
 
   /**
@@ -30,28 +32,25 @@ export class AuthService {
    * @param {RegisterUserDto} regUser - RegisterUserDto - the data that we're passing in from the
    * controller
    */
-  async registerUser(regUser: RegisterUserDto): Promise<void> {
+  async registerUser(regUser: RegisterUserDto): Promise<{activationToken: string}> {
     const { email, password } = regUser;
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const user = this.usersRepository.create({
+    const hashedPassword = await this.encoderService.encode(password);
+    const foundUser = await this.usersRepo.findByEmail(regUser.email);
+    if (foundUser) {
+      throw new UnprocessableEntityException();
+    }
+    const userCreate = this.usersRepository.create({
       email,
       password: hashedPassword,
       activationToken: v4(),
     });
-    const foundUser = await this.usersRepository.findOne({
-      where: { email },
-    });
-    if (foundUser) {
-      throw new HttpException('', HttpStatus.CONFLICT);
-    }
     try {
-      await this.usersRepository.save(user);
+      await this.usersRepository.save(userCreate);
+      let dict = { userCreate };
+      return {activationToken: dict.userCreate.activationToken};
+
     } catch (error) {
-      if (error.code === '23505') {
-        throw new HttpException('', HttpStatus.BAD_REQUEST);
-      }
-      throw new InternalServerErrorException();
+      throw new HttpException('', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -64,14 +63,16 @@ export class AuthService {
   async loginUser(loginDto: LoginUserDto): Promise<{ accessToken: string }> {
     const { email, password } = loginDto;
     const user = await this.usersRepo.findByEmail(email);
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await this.encoderService.compare(
+      password,
+      user.password,
+    );
 
     if (user.active === false) {
       throw new UnprocessableEntityException('Please, activate your account');
     }
     if (user && (await isValidPassword)) {
       const payload: JwtPayload = { id: user.id, email, active: user.active };
-
 
       const accessToken = await this.jwtService.sign(payload);
       return { accessToken };

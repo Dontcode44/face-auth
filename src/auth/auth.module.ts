@@ -6,6 +6,7 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { EncoderService } from './bcrypt/encoder.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
@@ -18,7 +19,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, JwtStrategy],
+  providers: [AuthService, UsersService, JwtStrategy, EncoderService],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
